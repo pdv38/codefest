@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigger Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* General body styling */
+        body {
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Container for sidebar and main content */
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background-color: black;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+        /* Header banner styling */
+        .header {
+            width: 100%;
+            background-color: lightgreen; /* Fallback color */
+            padding: 0; /* Remove padding */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header img {
+            width: 100%; /* Make the image span the full width of the header */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Remove extra space below the image */
+        }
+
+        /* Heading for trigger analysis */
+        .trigger-heading {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        /* Chart container styling */
+        .chart-container {
+            width: 600px;
+            height: 600px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <img src="header-image.png" alt="Header Image" class="header-image">
+    </div>
+
+    <!-- Container for sidebar and main content -->
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="recommendations.html">Home</a></li>
+                <li><a href="main.html">Journal</a></li>
+                <li><a href="triggers.html">Profile</a></li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Heading for trigger analysis -->
+            <h1 class="trigger-heading">Your Possible Triggers:</h1>
+
+            <!-- Chart container -->
+            <div class="chart-container">
+                <canvas id="triggerChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch trigger data from the Flask backend
+        fetch('/triggers')
+            .then(response => response.json())
+            .then(data => {
+                const labels = data.map(item => item.entity_type);
+                const counts = data.map(item => item.total);
+
+                // Create the pie chart
+                const ctx = document.getElementById('triggerChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: counts,
+                            backgroundColor: [
+                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+                            ],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Trigger Analysis'
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching trigger data:', error);
+            });
+    </script>
+</body>
+</html>

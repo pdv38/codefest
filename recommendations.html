@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Recommendations</title>
+    <style>
+        /* General body styling */
+        body {
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Container for sidebar and main content */
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background-color: black;
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 15px 0;
+        }
+
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto; /* Allow scrolling if content overflows */
+        }
+
+        /* Header banner styling */
+        .header {
+            width: 100%;
+            background-color: lightgreen; /* Fallback color */
+            padding: 0; /* Remove padding */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header img {
+            width: 100%; /* Make the image span the full width of the header */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Remove extra space below the image */
+        }
+
+        /* Article container styling */
+        .article-container {
+            width: 80%;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .article-container h2 {
+            margin-top: 0;
+        }
+
+        .article-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .article-list li {
+            margin: 15px 0;
+        }
+
+        .article-list a {
+            color: #36A2EB;
+            text-decoration: none;
+        }
+
+        .article-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <img src="header-image.png" alt="Header Image" class="header-image">
+    </div>
+
+    <!-- Container for sidebar and main content -->
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2>Menu</h2>
+            <ul>
+                <li><a href="recommendations.html">Home</a></li>
+                <li><a href="main.html">Journal</a></li>
+                <li><a href="triggers.html">Profile</a></li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <div class="article-container">
+                <h2>Your next read...</h2>
+                <ul class="article-list" id="article-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch recommended articles from the Flask backend
+        fetch('/recommend-articles')
+            .then(response => response.json())
+            .then(data => {
+                const articleList = document.getElementById('article-list');
+                articleList.innerHTML = ''; // Clear previous recommendations
+                data.forEach(article => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.href = article.url;
+                    link.textContent = article.title;
+                    link.target = '_blank'; // Open link in a new tab
+                    listItem.appendChild(link);
+                    articleList.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching recommendations:', error);
+            });
+    </script>
+</body>
+</html>
